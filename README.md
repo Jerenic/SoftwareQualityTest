@@ -68,8 +68,12 @@ Ein GitHub-Workflow ist unter `.github/workflows/ci.yml` hinterlegt und fuehrt a
 
 - Gradle Wrapper Validation
 - `spotlessCheck`
+- `checkstyleMain`
+- `pmdMain`
+- `spotbugsMain`
 - Unit-/Architekturtests
 - PostgreSQL-Integrationstest mit Testcontainers
+- Hadolint fuer `Dockerfile` (wenn im Repo vorhanden)
 
 ## Einheitliche Formatierung (alle OS)
 
@@ -101,4 +105,7 @@ Der konfigurierte `pre-commit` Hook fuehrt aus:
 
 - `spotlessApply`
 - `spotlessCheck`
+- `checkstyleMain`
+- `pmdMain`
+- `spotbugsMain`
 - `test`
