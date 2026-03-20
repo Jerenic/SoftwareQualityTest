@@ -3,6 +3,7 @@ plugins {
     id("org.springframework.boot") version "4.0.4"
     id("io.spring.dependency-management") version "1.1.7"
     id("com.diffplug.spotless") version "7.2.1"
+    id("com.star-zero.gradle.githook") version "1.2.1"
 }
 
 group = "org.lexture"
@@ -20,15 +21,19 @@ repositories {
 }
 
 dependencies {
+    testImplementation(platform("org.testcontainers:testcontainers-bom:1.20.1"))
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.flywaydb:flyway-core")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("com.tngtech.archunit:archunit-junit5:1.3.0")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -61,4 +66,14 @@ spotless {
 
 tasks.named("check") {
     dependsOn("spotlessCheck")
+}
+
+extensions.configure<Any>("githook") {
+    withGroovyBuilder {
+        "hooks" {
+            "create"("pre-commit") {
+                setProperty("task", "spotlessApply spotlessCheck test")
+            }
+        }
+    }
 }
