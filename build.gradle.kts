@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "4.0.4"
     id("io.spring.dependency-management") version "1.1.7"
+    id("com.diffplug.spotless") version "7.2.1"
 }
 
 group = "org.lexture"
@@ -10,7 +11,7 @@ description = "SoftwareQualityTest"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(26)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -31,4 +32,31 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+spotless {
+    java {
+        googleJavaFormat("1.22.0")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+    format("misc") {
+        target(
+            "*.md",
+            "*.gitignore",
+            "*.gitattributes",
+            "*.yaml",
+            "*.yml",
+            "*.properties",
+            "*.sh",
+            "*.ps1"
+        )
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
+tasks.named("check") {
+    dependsOn("spotlessCheck")
 }
