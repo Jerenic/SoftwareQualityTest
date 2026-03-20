@@ -48,6 +48,29 @@ Unter Windows PowerShell:
 ./gradlew test
 ```
 
+PostgreSQL-Integrationstest mit Testcontainers:
+
+```bash
+./gradlew test --rerun-tasks -DrunPostgresIntegration=true
+```
+
+## Datenbankmigrationen (Flyway)
+
+Dieses Projekt nutzt Flyway fuer versionierte Datenbankmigrationen.
+
+- Migrationspfad: `src/main/resources/db/migration`
+- Initiale Migration: `V1__init_tenant_schema.sql`
+- Flyway wird beim Start automatisch ausgefuehrt.
+
+## Continuous Integration (CI)
+
+Ein GitHub-Workflow ist unter `.github/workflows/ci.yml` hinterlegt und fuehrt aus:
+
+- Gradle Wrapper Validation
+- `spotlessCheck`
+- Unit-/Architekturtests
+- PostgreSQL-Integrationstest mit Testcontainers
+
 ## Einheitliche Formatierung (alle OS)
 
 Dieses Repo nutzt gemeinsame Regeln, damit Commits von Windows, macOS und Linux gleich formatiert sind:
@@ -63,18 +86,19 @@ Dieses Repo nutzt gemeinsame Regeln, damit Commits von Windows, macOS und Linux 
 ./gradlew spotlessCheck
 ```
 
-### Pre-commit Hook aktivieren
+### Git-Hooks via Plugin (nicht nativ)
 
-Linux/macOS/Git Bash:
+Dieses Projekt verwendet das Gradle-Plugin `com.star-zero.gradle.githook`.
+Damit werden Git-Hooks fuer alle Umgebungen einheitlich ueber Gradle generiert.
+
+Hook einmalig installieren/aktualisieren:
 
 ```bash
-./scripts/setup-git-hooks.sh
+./gradlew tasks
 ```
 
-Windows PowerShell:
+Der konfigurierte `pre-commit` Hook fuehrt aus:
 
-```powershell
-.\scripts\setup-git-hooks.ps1
-```
-
-Danach wird vor jedem Commit automatisch Spotless ausgefuehrt.
+- `spotlessApply`
+- `spotlessCheck`
+- `test`
