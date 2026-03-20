@@ -27,7 +27,13 @@ jobs:
         uses: gradle/actions/wrapper-validation@v5
 
       - name: Spotless + unit tests
-        run: ./gradlew --no-daemon clean spotlessCheck test
+        run: ./gradlew --no-daemon clean spotlessCheck checkstyleMain pmdMain spotbugsMain test
 
       - name: Postgres integration test (Testcontainers)
         run: ./gradlew --no-daemon test -DrunPostgresIntegration=true
+
+      - name: Run Hadolint (Dockerfile lint)
+        if: ${{ hashFiles('Dockerfile') != '' }}
+        uses: hadolint/hadolint-action@v3.3.0
+        with:
+          dockerfile: Dockerfile
